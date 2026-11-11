@@ -30,6 +30,12 @@
   ];
 
   // 住所補完用の参照データ（郵便番号7桁）
+  // 回答の送信先（Google Apps Script の Web アプリ URL）。
+  // 未設定なら送信せず、localStorage のみに保存する（従来どおり）。
+  // 検証用に window.__SUBMIT_ENDPOINT があればそちらを優先する。
+  const SUBMIT_ENDPOINT =
+    (typeof window !== "undefined" && window.__SUBMIT_ENDPOINT) || "";
+
   const ZIP_MAP = {
     "1600022": "東京都新宿区新宿3-15-8 メゾン花子201",
     "1500001": "東京都渋谷区神宮前1-2-3 グランド太郎302",
@@ -75,6 +81,11 @@
     const orderOrder = shuffle(ORDERS.map((_, i) => i));
     const session = {
       v: 2,
+      sessionId:
+        "S" +
+        Date.now().toString(36) +
+        "-" +
+        Math.random().toString(36).slice(2, 6),
       modeOrder,
       orderOrder,
       stepIndex: 0,
@@ -87,6 +98,22 @@
 
   function saveSession(session) {
     sessionStorage.setItem("shop-session", JSON.stringify(session));
+  }
+
+  // 注文が完了するたびに送信先へ送る（ベストエフォート）。
+  // 失敗しても実験は続行する。localStorage 側が正本で、後から書き出して回収できる。
+  function sendResponse(response) {
+    if (!SUBMIT_ENDPOINT) return;
+    try {
+      fetch(SUBMIT_ENDPOINT, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "text/plain" },
+        body: JSON.stringify(response),
+      }).catch(() => {});
+    } catch (e) {
+      /* 送信できなくても何もしない */
+    }
   }
 
   function briefHtml(order) {
@@ -500,6 +527,7 @@
       mode,
       orderId: session.orderOrder[session.stepIndex],
       logVersion: 3,
+      sessionId: session.sessionId || null,
       durationMs: Date.now() - startedAt,
       submitAttempts: session.submitAttempts,
       values: Object.fromEntries(new FormData(form).entries()),
@@ -532,6 +560,7 @@
     } catch (_) {
       /* noop */
     }
+    sendResponse(response);
 
     if (session.stepIndex < 1) {
       const nextOrder = ORDERS[session.orderOrder[1]];
