@@ -34,7 +34,8 @@
   // 未設定なら送信せず、localStorage のみに保存する（従来どおり）。
   // 検証用に window.__SUBMIT_ENDPOINT があればそちらを優先する。
   const SUBMIT_ENDPOINT =
-    (typeof window !== "undefined" && window.__SUBMIT_ENDPOINT) || "";
+    (typeof window !== "undefined" && window.__SUBMIT_ENDPOINT) ||
+    "https://script.google.com/macros/s/AKfycbxMeij8ZFGBXoW0f__rDzP6_OfWnjCQjaSaj_P6T3IVO8t304mTuNEkcP-JY-b6r-ShJA/exec";
 
   const ZIP_MAP = {
     "1600022": "東京都新宿区新宿3-15-8 メゾン花子201",
