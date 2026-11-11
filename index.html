@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Audio Select | ご注文手続き</title>
+  <link rel="stylesheet" href="app.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="site-header-inner">
+      <div class="brand">Audio Select <span class="brand-sub">オンラインショップ</span></div>
+    </div>
+  </header>
+
+  <main class="page">
+    <!-- ウェルカム -->
+    <section id="view-welcome" class="view">
+      <div class="breadcrumb">ご利用案内</div>
+      <h1>ご注文手続きのお願い</h1>
+      <p class="lead">
+        これから、指定の内容で商品をご注文いただきます。お手数ですが、2件分のご入力をお願いします。
+      </p>
+
+      <div class="panel">
+        <div class="task-box">
+          <p><strong>進め方</strong></p>
+          <ul class="task-list">
+            <li>表示された内容どおりに、フォームへ入力する</li>
+            <li>「注文する」を押して、注文を完了する</li>
+            <li>1件目の完了後、続けて2件目を行う</li>
+          </ul>
+        </div>
+        <p class="note">
+          入力中に分からない点があれば、その場で係員に尋ねてください。<br />
+          できるだけ正確に、通常の利用に近いペースでご対応ください。
+        </p>
+        <div class="actions">
+          <button class="btn btn-primary" id="btn-start" type="button">はじめる</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 入力 -->
+    <section id="view-task" class="view hidden">
+      <div class="breadcrumb">ご注文手続き</div>
+      <h1>ご注文手続き</h1>
+      <p class="lead" id="task-lead">必要事項をご入力のうえ、「注文する」へお進みください。</p>
+
+      <div class="panel">
+        <div class="product">
+          <div class="product-thumb" aria-hidden="true">🎧</div>
+          <div>
+            <h2>ワイヤレスイヤホン Pro</h2>
+            <p class="meta">ノイズキャンセリング / Bluetooth 5.3 / 充電ケース付き</p>
+            <p class="price">¥12,800（税込）</p>
+          </div>
+        </div>
+
+        <p class="panel-hint">項目名を押すと、その項目の内容が表示されます。</p>
+        <div class="task-box" id="order-brief"></div>
+
+        <form id="order-form" autocomplete="off">
+          <div class="form-block">
+            <h3 class="section-title">ご注文内容</h3>
+            <div class="grid">
+              <div class="field" data-field="qty">
+                <label for="qty">数量<span class="req">必須</span></label>
+                <select id="qty" name="qty">
+                  <option value="">選択してください</option>
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                </select>
+                <div class="error-text">数量を選択してください</div>
+              </div>
+              <div class="field" data-field="date">
+                <label for="date">希望配送日<span class="req">必須</span></label>
+                <input id="date" name="date" type="date" />
+                <div class="error-text">希望配送日を選択してください</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-block">
+            <h3 class="section-title">お客様情報</h3>
+            <div class="grid">
+              <div class="field" data-field="name">
+                <label for="name">氏名<span class="req">必須</span></label>
+                <input id="name" name="name" type="text" />
+                <div class="error-text">氏名を入力してください</div>
+              </div>
+              <div class="field" data-field="kana">
+                <label for="kana">ふりがな<span class="req">必須</span></label>
+                <input id="kana" name="kana" type="text" />
+                <div class="error-text">ふりがなを入力してください</div>
+              </div>
+              <div class="field" data-field="zip">
+                <label for="zip">郵便番号<span class="req">必須</span></label>
+                <input id="zip" name="zip" type="text" inputmode="numeric" maxlength="8" />
+                <div class="error-text">郵便番号を入力してください</div>
+              </div>
+              <div class="field" data-field="address">
+                <label for="address">住所<span class="req">必須</span></label>
+                <input id="address" name="address" type="text" />
+                <div class="error-text">住所を入力してください</div>
+              </div>
+              <div class="field" data-field="tel">
+                <label for="tel">電話番号<span class="req">必須</span></label>
+                <input id="tel" name="tel" type="tel" />
+                <div class="error-text">電話番号を入力してください</div>
+              </div>
+              <div class="field" data-field="email">
+                <label for="email">メールアドレス<span class="req">必須</span></label>
+                <input id="email" name="email" type="email" />
+                <div class="error-text">メールアドレスを入力してください</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-block">
+            <h3 class="section-title">お支払い方法</h3>
+            <div class="field" data-field="payment">
+              <div class="radio-row">
+                <label class="radio-card">
+                  <input type="radio" name="payment" value="クレジットカード" />
+                  クレジットカード
+                </label>
+                <label class="radio-card">
+                  <input type="radio" name="payment" value="代金引換" />
+                  代金引換
+                </label>
+              </div>
+              <div class="error-text">支払い方法を選択してください</div>
+            </div>
+          </div>
+
+          <div class="actions">
+            <button class="btn btn-primary" type="submit">注文する</button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- 確認（次の注文へ） -->
+    <section id="view-between" class="view hidden">
+      <div class="breadcrumb">ご注文手続き</div>
+      <h1>1件目が完了しました</h1>
+      <p class="lead">続けて、もう1件のご注文手続きをお願いします。</p>
+      <div class="panel">
+        <div class="task-box">
+          <p><strong>次の注文</strong></p>
+          <p id="between-brief"></p>
+        </div>
+        <div class="actions">
+          <button class="btn btn-primary" id="btn-next" type="button">次へ進む</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 完了 -->
+    <section id="view-done" class="view hidden">
+      <div class="breadcrumb">ご注文手続き</div>
+      <div class="panel">
+        <div class="done-wrap">
+          <div class="done-mark" aria-hidden="true">✓</div>
+          <h1>ご注文ありがとうございます</h1>
+          <p>2件のご注文を受け付けました。</p>
+        </div>
+        <p class="note" style="text-align: center; margin-top: 24px;">
+          ご対応は以上です。係員の案内にお従いください。
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
