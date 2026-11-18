@@ -346,6 +346,13 @@ input:focus, select:focus {
   font-size: 14px;
 }
 
+/* 注文情報の文字は選択・コピーできないようにする（手入力を促すため） */
+#order-brief,
+#between-brief {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
 @media (max-width: 640px) {
   .grid { grid-template-columns: 1fr; }
   .panel { padding: 20px 16px; }

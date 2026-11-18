@@ -141,8 +141,6 @@
   // 注文情報を項目別の開閉パネルで提示し、開閉をログに残す。
   // 全項目を同じ作りにし、住所だけを特別扱いしない（照合への誘導を避ける）。
   const PANEL_FIELDS = [
-    ["qty", "数量"],
-    ["date", "希望配送日"],
     ["name", "氏名"],
     ["kana", "ふりがな"],
     ["zip", "郵便番号"],
@@ -219,6 +217,32 @@
       };
     });
     return stats;
+  }
+
+  function closePanel(name) {
+    const panel = document.querySelector(
+      `#order-brief .info-panel[data-panel="${name}"]`
+    );
+    if (!panel || !panelOpenSince[name]) return;
+    const body = panel.querySelector(".info-panel-body");
+    body.classList.add("hidden");
+    const head = panel.querySelector(".info-panel-head");
+    if (head) head.setAttribute("aria-expanded", "false");
+    const mark = panel.querySelector(".info-panel-mark");
+    if (mark) mark.textContent = "＋";
+    panelSessions.push({
+      name,
+      openAt: panelOpenSince[name],
+      closeAt: Date.now(),
+    });
+    delete panelOpenSince[name];
+    logEvent("panel-close", name);
+  }
+
+  // 入力欄に触れたら、開いているパネルを全部閉じる。
+  // 情報を見る行為が必ず「開く」として記録され、開いたまま照合されるケースを防ぐ。
+  function closeAllPanels() {
+    Object.keys(panelOpenSince).forEach((name) => closePanel(name));
   }
 
   function onPanelToggle(e) {
@@ -460,6 +484,7 @@
     const t = e.target;
     if (!t || !t.name) return;
     logEvent("focus", t.name);
+    closeAllPanels();
     if (t.name === "address") {
       // 値が入った状態での住所欄へのフォーカスは見直しとして数える（両条件共通）
       if (check && check.valueSetAt) {
@@ -491,6 +516,16 @@
         }
       }
     }
+  });
+
+  // コピー＆ペースト・ドラッグ＆ドロップでの入力を防ぐ（試みはログに残す）
+  form.addEventListener("paste", (e) => {
+    e.preventDefault();
+    logEvent("paste-blocked", e.target && e.target.name ? e.target.name : null);
+  });
+  form.addEventListener("drop", (e) => {
+    e.preventDefault();
+    logEvent("drop-blocked", e.target && e.target.name ? e.target.name : null);
   });
 
   form.addEventListener("change", (e) => {
@@ -527,7 +562,7 @@
       step: session.stepIndex + 1,
       mode,
       orderId: session.orderOrder[session.stepIndex],
-      logVersion: 3,
+      logVersion: 4,
       sessionId: session.sessionId || null,
       durationMs: Date.now() - startedAt,
       submitAttempts: session.submitAttempts,
