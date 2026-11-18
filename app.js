@@ -101,20 +101,25 @@
     sessionStorage.setItem("shop-session", JSON.stringify(session));
   }
 
-  // 注文が完了するたびに送信先へ送る（ベストエフォート）。
+  // 送信先へ JSON を送る（ベストエフォート）。
   // 失敗しても実験は続行する。localStorage 側が正本で、後から書き出して回収できる。
-  function sendResponse(response) {
+  function postJson(payload) {
     if (!SUBMIT_ENDPOINT) return;
     try {
       fetch(SUBMIT_ENDPOINT, {
         method: "POST",
         mode: "no-cors",
         headers: { "Content-Type": "text/plain" },
-        body: JSON.stringify(response),
+        body: JSON.stringify(payload),
       }).catch(() => {});
     } catch (e) {
       /* 送信できなくても何もしない */
     }
+  }
+
+  // 注文が完了するたびに回答を送る
+  function sendResponse(response) {
+    postJson(response);
   }
 
   function briefHtml(order) {
@@ -620,6 +625,51 @@
     saveSession(session);
     startTask();
   });
+
+  // 完了画面の事後アンケート（任意の自由記述以外は必須）
+  const surveyForm = document.getElementById("survey-form");
+  if (surveyForm) {
+    surveyForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const data = new FormData(surveyForm);
+      let firstInvalid = null;
+      ["ease", "rechecked", "noticed"].forEach((name) => {
+        const field = surveyForm.querySelector(`[data-field="${name}"]`);
+        const ok = !!data.get(name);
+        if (field) field.classList.toggle("invalid", !ok);
+        if (!ok && !firstInvalid && field) firstInvalid = field;
+      });
+      if (firstInvalid) {
+        if (firstInvalid.scrollIntoView) {
+          firstInvalid.scrollIntoView({ block: "center" });
+        }
+        return;
+      }
+      const survey = {
+        type: "survey",
+        logVersion: 4,
+        sessionId: ensureSession().sessionId || null,
+        ease: data.get("ease"),
+        recheckedItem: data.get("rechecked"),
+        noticed: data.get("noticed"),
+        noticedDetail: String(data.get("noticedDetail") || "").trim(),
+        comment: String(data.get("comment") || "").trim(),
+        finishedAt: new Date().toISOString(),
+      };
+      try {
+        const key = "shop-surveys";
+        const all = JSON.parse(localStorage.getItem(key) || "[]");
+        all.push(survey);
+        localStorage.setItem(key, JSON.stringify(all));
+      } catch (_) {
+        /* noop */
+      }
+      postJson(survey);
+      surveyForm.classList.add("hidden");
+      const done = document.getElementById("survey-done");
+      if (done) done.classList.remove("hidden");
+    });
+  }
 
   // 初期表示
   showView("view-welcome");

@@ -169,8 +169,57 @@
           <h1>ご注文ありがとうございます</h1>
           <p>2件のご注文を受け付けました。</p>
         </div>
-        <p class="note" style="text-align: center; margin-top: 24px;">
-          ご対応は以上です。係員の案内にお従いください。
+        <form id="survey-form" class="survey-form" novalidate>
+          <p class="lead">最後に、アンケートにご協力ください。</p>
+
+          <div class="field" data-field="ease">
+            <label>1件目と2件目では、どちらが入力しやすかったですか</label>
+            <div class="radio-row">
+              <label class="radio-card"><input type="radio" name="ease" value="first">1件目</label>
+              <label class="radio-card"><input type="radio" name="ease" value="second">2件目</label>
+              <label class="radio-card"><input type="radio" name="ease" value="same">同じくらい</label>
+            </div>
+            <div class="error-text">選択してください</div>
+          </div>
+
+          <div class="field" data-field="rechecked">
+            <label>入力したあと、内容を確認するために開き直すことが多かった項目はどれですか（1つ）</label>
+            <div class="radio-row">
+              <label class="radio-card"><input type="radio" name="rechecked" value="name">氏名</label>
+              <label class="radio-card"><input type="radio" name="rechecked" value="kana">ふりがな</label>
+              <label class="radio-card"><input type="radio" name="rechecked" value="zip">郵便番号</label>
+              <label class="radio-card"><input type="radio" name="rechecked" value="address">住所</label>
+              <label class="radio-card"><input type="radio" name="rechecked" value="tel">電話番号</label>
+              <label class="radio-card"><input type="radio" name="rechecked" value="email">メールアドレス</label>
+              <label class="radio-card"><input type="radio" name="rechecked" value="payment">支払い方法</label>
+              <label class="radio-card"><input type="radio" name="rechecked" value="none">特に開き直していない</label>
+            </div>
+            <div class="error-text">選択してください</div>
+          </div>
+
+          <div class="field" data-field="noticed">
+            <label>1件目と2件目で、入力のしかたに違いがあると感じましたか</label>
+            <div class="radio-row">
+              <label class="radio-card"><input type="radio" name="noticed" value="yes">感じた</label>
+              <label class="radio-card"><input type="radio" name="noticed" value="no">感じなかった</label>
+            </div>
+            <div class="error-text">選択してください</div>
+          </div>
+
+          <div class="field">
+            <label for="survey-noticed-detail">違いを感じた方は、どんな違いでしたか（任意）</label>
+            <input id="survey-noticed-detail" name="noticedDetail" type="text" autocomplete="off">
+          </div>
+
+          <div class="field">
+            <label for="survey-comment">その他、気づいたことや感想があればお書きください（任意）</label>
+            <input id="survey-comment" name="comment" type="text" autocomplete="off">
+          </div>
+
+          <button type="submit" class="primary">回答を送信する</button>
+        </form>
+        <p id="survey-done" class="note hidden" style="text-align: center; margin-top: 24px;">
+          ご協力ありがとうございました。ご対応は以上です。係員の案内にお従いください。
         </p>
       </div>
     </section>
