@@ -250,6 +250,13 @@
     Object.keys(panelOpenSince).forEach((name) => closePanel(name));
   }
 
+  // パネルは同時に1つだけ開ける（別のパネルを開くと、開いていたものは閉じる）
+  function closeOtherPanels(except) {
+    Object.keys(panelOpenSince).forEach((name) => {
+      if (name !== except) closePanel(name);
+    });
+  }
+
   function onPanelToggle(e) {
     const head = e.currentTarget;
     const panel = head.closest(".info-panel");
@@ -263,6 +270,7 @@
     const mark = panel.querySelector(".info-panel-mark");
     if (mark) mark.textContent = opening ? "－" : "＋";
     if (opening) {
+      closeOtherPanels(name);
       panelOpenSince[name] = now;
       logEvent("panel-open", name);
     } else {
